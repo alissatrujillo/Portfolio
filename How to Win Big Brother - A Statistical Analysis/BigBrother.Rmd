@@ -1,0 +1,331 @@
+---
+title: "How to Win Big Brother: A Statistical Analysis"
+author: "Alissa Trujillo"
+date: '2022-05-17'
+output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: 72
+bibliography: bb_bibliography.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, root.dir = "/Users/alissa/Documents/Grad/DSC 520/dsc520")
+knitr::opts_chunk$set(tidy.opts = list(width.cutoff = 58), tidy = TRUE)
+```
+
+```{r, include=FALSE}
+library(dplyr); library(ggplot2)
+```
+
+## Introduction
+
+Big Brother is a television game show that involves a number of
+strangers being cut off from the outside world and living in a house
+together. They have no contact with their families, access to the news,
+or most of the luxuries of everyday life. They compete in competitions
+every week to determine who is the Head of Household, who must nominate
+two houseguests for eviction, and who holds the Power of Veto, which can
+save one of the nominees on the block. For the first phase of the game,
+the players who are evicted are sent home. In the second phase of the
+game, the players who are evicted become members of the jury. They
+remain sequestered from the outside world and cast votes at the end of
+the season for the winner.
+
+## What Makes a Good Player?
+
+I have collected data on each of the 370 houseguests who have entered
+the Big Brother house over the 23 seasons of the show's run. This data
+includes competition wins, demographic information, and how well the
+contestants fared in the game. The purpose of this paper will be to
+analyze which factors contribute to a houseguest being a good Big
+Brother player, making it far in the game, and ultimately becoming a
+winner. I will also be taking a look at some commonly-held beliefs by
+fans, such as the "First to Enter Curse" and that being the first HOH
+puts a player on the path to success.
+
+## The Dataset
+
+The dataset I have compiled takes information from three separate data
+sets I collected. The first is contestant_data, which was compiled by
+github user vdixon3 (@vincedixon). This data set boasts 49 variables
+containing information about each of the 370 houseguests to ever set
+foot the Big Brother house. The second data set, additional_data is
+information I compiled myself using online sources regarding competition
+wins and miscellaneous information I needed to test my hypotheses. This
+data set includes 7 variables, 3 of which are identical to
+contestant_data, so they are easily able to combine together. The third
+data set, diversity_data includes season-specific information about
+diversity and demographics. This data had to be transformed from season
+data to contestant data. For integrity, the data from season 1 had to be
+removed due to the format of the show being completely different and
+most of the values for important variables being N/A. The final data set
+contains 22 variables regarding the 360 houseguests from season 2 and
+beyond.
+
+```{r, echo=FALSE}
+setwd("/Users/alissa/Documents/Grad/DSC 520/dsc520")
+houseguests_df <- read.csv("houseguests_data.csv", header = TRUE)
+diversity_data <- read.csv("data/bigbrother/bb_diversity.csv", header = TRUE)
+winners_df <- houseguests_df[which(houseguests_df$winner == TRUE), ]
+
+head(houseguests_df)
+```
+
+## Are The Rumors True?
+
+I am going to begin my analysis by taking a look at a couple of theories
+that are floated around by fans of the show.
+
+### First To Enter Curse
+
+It is widely believed that the first houseguest to enter the house each
+season is doomed to do poorly in the game. It is true that no houseguest
+has ever won the game after stepping through the doors first, but is it
+statistically significant?
+
+```{r}
+cor.test(as.integer(houseguests_df$first_in_house), as.integer(houseguests_df$winner))
+```
+
+The correlation between being the first houseguest to enter the house
+and being the winner of the game is -0.03, very close to 0 with quite a
+large confidence interval. The p-value is 0.55, meaning that the
+correlation is not significant. Only 1 in 16 houseguests can be the
+first to walk through the door, and only 1 in 16 houseguests will go on
+to win the game. It is more likely that the two events have never
+co-occured purely by chance rather than something nefarious occuring.
+
+```{r, echo=FALSE}
+cor.test(as.integer(houseguests_df$first_in_house), houseguests_df$placement)
+```
+
+The correlation between a houseguest's placement in the game and whether
+or not they entered the house first is -0.05, which is once again very
+close to 0 with a wide confidence interval. Since placement decreases as
+a player gets farther in the game, this negative correlation would
+denote a very small correlation between entering the house first and
+lasting longer in the game. This is once again, not a significant
+statistic, and is more than likely just due to happenstance.
+
+### First HOH
+
+The first HOH is the first semblance of power that is earned throughout
+the show. This allows the winner to make important relationships and
+form alliances early on. This is widely believed to be a useful tool for
+houseguests to establish themselves in the game.
+
+```{r, echo=FALSE}
+cor.test(as.integer(houseguests_df$first_hoh), as.integer(houseguests_df$winner))
+```
+
+The correlation between winning the first Head of Household and winning
+the show is 0.13. This statistic is significant at a p=0.05 level, with
+a p-value of p=0.01. This bolsters the idea that, with everything else
+held constant, winning the first competition is correlated positively
+with winning the game. This supports the hypothesis that forging those
+early relationships is a really big asset to have as a player.
+
+```{r, echo=FALSE}
+cor.test(as.integer(houseguests_df$first_hoh), houseguests_df$placement)
+```
+
+There is a small negative correlation, -0.04, between winning the first
+HOH competition and a houseguest's final placement in the game. This
+statistic is not significant, with a p-value of 0.44. This means that
+winning the first competition is correlated with winning the game, but
+not with a player's overall final placement. This may be due to the fact
+that winning so early can make a player look more threatening, so
+players may be likely to take shots at getting them out early, evening out their final placement.
+
+```{r, out.width="75%", out.height="75%", fig.align= "center", echo=FALSE}
+HOH1_df <- houseguests_df[which(houseguests_df$first_hoh == TRUE), ]
+
+ggplot(data = HOH1_df, aes(x=placement)) + geom_bar(fill="lightblue") + 
+  xlab("Placement") + ylab("HG's Who Won First HOH")
+```
+
+Looking at this graph, we can see that players who win the first HOH tend to go on to win the game, or are voted out right around the beginning of jury (roughly after 5-6 houseguests have been evicted in a 16 HG season, centering around the 10th place mark on this graph). This displays that houseguests who win that very first competition typically fall into two different categories: those that use it to form strong relationships early and set themselves up for success, or those who play too hard too early and get themselves voted out early.
+
+## Looking At Diversity
+
+As the seasons have gone on, there has been an increasing amount of
+diversity in the cast. The houseguests that have been recruited have
+been more well-rounded and robust characters versus the archetypes of
+early reality television. While diversity varies season to season, the
+general trend is that it has increased throughout the show's run.
+
+```{r, out.width="75%", out.height="75%", fig.align= "center", echo=FALSE}
+diversity_plot <- ggplot(data = diversity_data, aes(x = as.numeric(row.names(diversity_data)), y = diversity_entropy_including_unknown)) + geom_point() + geom_line() + geom_smooth(method = "lm", color = "purple") + ylab("Diversity Entropy") + xlab("Season")
+
+diversity_plot
+```
+
+Diversity entropy is defined as how minorities are represented versus
+their actual makeup of American society. A value below 1 indicates that
+white players are over represented, and a value above 1 means that as a
+whole, people of color are represented more prominently than their
+presence in American communities (@vincedixon).
+
+```{r, out.width="75%", out.height="75%", fig.align= "center", echo=FALSE}
+ethnicity_breakdown <- houseguests_df %>%
+  group_by(ethnicity) %>%
+  summarise(n = n())
+
+ethnicity_pie <- ggplot(ethnicity_breakdown, aes(x="", y=n, fill=ethnicity)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar("y", start=0) +
+  theme(axis.text.x=element_blank()) +
+  xlab("") + ylab("")
+
+ethnicity_pie
+```
+
+Of the 360 houseguests that have competed on the show, 255 have
+identified as Caucasian. Only 29% of houseguests to ever enter the big
+brother house consider themselves to be something other than white.
+While we are taking steps in the right direction, and have just finished
+one of our most diverse seasons over (resulting in a final 7 comprised
+entirely of people of color, a black winner, and a black runner up),
+there is still so much we can do as a society to embrace fully
+representative television.
+
+## Predicting Game Performance
+
+So what characteristics are indicative of a player performing well in
+the game? We will first analyze the relationship with final game
+standings, demographic information, and game statistics. Since we have
+multiple variables we would like to measure against placement, we will
+be creating a multiple regression model.
+
+The variables that I am predicting to be key indicators of game success
+are a contestant's competition wins, age, gender, and finally, the
+interaction between ethnicity and the season's diversity. I am
+predicting that people of color perform better on seasons where
+diversity is high. Season diversity is meaningless on its own in this
+model, as every person in the same season will have the same diversity
+quotient.
+
+```{r, echo=FALSE}
+standings_lm <- lm(placement ~ gender + age + poc + poc*season_diversity + comps, data=houseguests_df)
+
+summary(standings_lm)
+```
+
+It is important to remember that when looking at this data, placement
+goes down as performance goes up (first place is better than second,
+etc.). So, negative coefficients denote better performance in the game.
+
+The first variable to look at is gender. There is a positive correlation
+between being male and placement in the game, meaning that women tend to
+make it farther in the game (significant at p=0.004), with all other
+variables held constant. This seems surprising as a huge chunk of the
+winners are men, however it makes sense when you consider that many of
+the players who are evicted early for playing too hard are also men.
+
+Age has a negative correlation with game performance, meaning that as
+age increases, placement goes down. This means lasting longer in the
+game is positively correlated with age (significant at p=0.0001). This
+is also surprising as younger contestants typically run the game, but
+upon reflection it makes sense that older houseguests are less likely to
+be voted out immediately. There are also very few "older" houseguests,
+most are around 20-30, so the few in their 40's+ are probably outliers
+and do not weigh heavily on this calculation.
+
+Winning competitions has a high negative correlation with placement in
+the game. This indicates that those who perform better in competitions
+last longer in the game (significant at p=0.000). This makes sense, as
+winning competitions not only boosts your resume in the game, but it
+allows you to hold power to save yourself or your alliance members each
+week. This works two-fold, as it allows you to strengthen your
+relationships with others and prove your worth, but also gives a player
+concrete powers they can use to actually protect themselves. I was
+curious whether this effect would be overshadowed by the fact that this
+creates a target for the person who is consistently winning, but that
+seems to not be true.
+
+Identifying as a person of color is correlated positively with
+placement, meaning that they do not tend to last as long as those who identify as white (significant at p=0.01). This is not surprising, as the
+early seasons did not provide much diversity and relied heavily on
+type-casting that created barriers for their success.
+
+It is interesting to note that my prediction was correct, however. While
+people of color tend to not last as long in the game in general, in
+seasons where diversity is high, they tend to perform better. There is a
+negative correlation between the interaction of poc\*season_diversity
+and final game standings (significant at p=0.004). This is very
+interesting to see and supports my hypothesis that when the show is able
+to cast houseguests based on their merit and personality rather than
+trying to fill a quota for a single person of color and a single
+lgbtq-identifying person, they cast much more well-rounded people who
+are able to form relationships and succeed in the game.
+
+## What Does A Winner Look Like?
+
+Now that we have seen the factors that indicate a player will perform
+well in the game, we will look at which factors are specific to indicate
+a winner.
+
+### Data on Past Winners
+
+The demographic breakdown of past winners paints a pretty clear picture.
+They tend to be male, Caucasian, non-lgbt and in their twenties.
+
+```{r, figures-side, fig.show="hold", out.width="50%", echo=FALSE}
+ggplot(data = winners_df, aes(x=gender)) + geom_bar(fill="lightblue") + 
+  xlab("Gender") + ylab("Winners")
+ggplot(data = winners_df, aes(x=age)) + geom_bar(fill="lightblue") + 
+  xlab("Age") + ylab("Winners")
+ggplot(data = winners_df, aes(x=ethnicity)) + geom_bar(fill="lightblue") + xlab("Ethnicity") + ylab("Winners")
+ggplot(data = winners_df, aes(x=lgbt)) + geom_bar(fill="lightblue") + 
+  xlab("LGBT") + ylab("Winners")
+```
+
+### Creating A Model
+
+Since winning or not winning is a binary variable, we will be creating a
+generalized linear model. I will be analyzing the same factors that I
+did while looking at overall game performance.
+
+```{r, echo=FALSE}
+winner_Model.1 <- glm(winner ~ gender + age + poc + poc*season_diversity + comps, data = houseguests_df, family = binomial())
+
+summary(winner_Model.1)
+```
+
+Of all the factors we are looking at, none of the demographic pieces of
+information are significant in determining a winner. This may seem
+surprising after looking at the breakdown of winners above. My best
+guess at why none of the indicators are significant is that coming into
+the house as a white, Caucasian, non-lgbt twenty-something male does not
+indicate that a player has a better chance of winning the game, simply
+because there are so many of them. If there are four houseguests fitting
+that description on a season, at least three of them would necessarily
+have to lose.
+
+The only significant statistic that correlates with winning the game is
+competition wins (significant at p=0.000). This, again, makes sense as
+winning competitions provides a player with an avenue to protect
+themselves and their allies. At the end of the game, the jury is most
+likely to vote for a player who boasts the best in-game resume, and
+competition wins is a huge part of that.
+
+## Testing the Model
+
+While there is a limited amount of data, as the show has only been on
+air for 23 seasons, future seasons present an opportunity to test the
+model. The next season begins on July 3rd, 2022 and it would be a good
+exercise for me to use my models to see if I am able to predict
+performance for the newly announced houseguests prior to the season.
+
+## So How Do I Win the Game?
+
+The only conclusive advice I have to give to aspiring houseguests is: win competitions. Winning competitions is significantly correlated with better performance in the game, making it father, and ultimately winning. It provides a player with the ability to form strong bonds and alliances, especially if those competitions are won early on, and *especially* if they win the first HOH. The other key indicator of performing well on a season is being cast with others that are similar to you. Meaning if you are a person of color, hope that there are others surrounding you. And for good measure, even though there is no statistical correlation, it is probably wise to avoid entering first (only joking, but I am still a bit superstitious).
+
+These models that I have created to predict future houseguests' performance are very much rough drafts that will have to be tested and fine-tuned during future seasons, especially as we lean more and more into diverse and well-rounded casting (not only when it comes to race, but also when it comes to sexuality, gender-norms, and leaning away from TV archetypes).
+
+### RMD File
+
+<https://github.com/alisssaa/dsc520/blob/master/FinalProject/BB_FinalProject.Rmd>
+
+## Bibliography
