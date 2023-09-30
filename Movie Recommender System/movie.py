@@ -42,6 +42,13 @@ def recommend(movie):
     rec_m.drop(['Total Ratings', 'movieId'], axis=1, 
                inplace=True)
     rec_m = rec_m.rename(columns={'Correlation': 'match'})
+    rec_m.rename(columns = {'title':'Film', 'match':'Match', 'genres':'Genres'}, inplace=True)
+    rec_m['Match'] = rec_m['Match'].map('{:.1%}'.format)
+    
+    selfm = rec_m['Match'] == '100.0%'
+    rec_m = rec_m[~selfm]
+    
+    rec_m['Genres'] = rec_m['Genres'].str.split('|')
     
     return rec_m.head(6)
 
@@ -51,14 +58,17 @@ movie = st.text_input('What is your favorite movie?', 'Shrek')
 
 recs = recommend(movie)
 
-recs.rename(columns = {'title':'Film', 'match':'Match', 'genres':'Genres'}, inplace=True)
-recs['Match'] = recs['Match'].map('{:.1%}'.format)
+movie_matches = [col for col in movie_df.title if movie in col]
 
-selfm = recs['Match'] == '100.0%'
-recs = recs[~selfm]
-
-recs['Genres'] = recs['Genres'].str.split('|')
+if not movie_matches:
+    recs = recommend('Shrek')
+    st.write('No matches found for:', movie)
+    print('no')
+    print(recs)
 
 st.subheader('You should check out these titles:')
 
-st.dataframe(data=recs, hide_index=True)
+try:
+    st.dataframe(data=recs, hide_index=True)
+except:
+    st.dataframe(data=recommend('Shrek'))
