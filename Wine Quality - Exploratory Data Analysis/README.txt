@@ -1,0 +1,5 @@
+Wine is a social beverage that has been around for centuries, enjoyed with dinner, large celebratory events or just in small gatherings with friends. Over the years we have developed so many fermentation techniques that allow us to create unique flavor profiles. There are several different varietites of grapes and fermentation processes that help us
+
+Which defines a "quality" wine? Which facets of the fermentation process are most important in creating delicious flavors in the wine? How do factors such as acidity, tannins, grapes, growing region and more affect the overall reviews of the final product?
+
+This project will explore those questions and more. By using data on hundreds of wines, we can deduce which factors are most important in the fermentation process and how they affect the overall reception of the final product.
