@@ -1,0 +1,9 @@
+Dodgers Game Attendance - A Regression Analysis
+
+The main revenue stream for any sports franchise lies in how many fans they can get in their seats during games. An increase in attendance also increases profit in other avenues, such as concessions purchases and jersey sales. By taking a look at the driving factors behind game attendance, we can develop a proposal for the team to increase overall profit and hopefully encourage those in attendance to become lifelong fans.
+
+This project takes a look at a dataset containing attendance information for the Dodgers' 2022 season. The dataset contains information regarding the game day weather, current season,  day of the week, sourvenirs given out at the game, and the opponent they are facing. I engineered additional features to quantify effects of different types of souvenirs vs. the presence of a souvenir regardless of value.
+
+To determine the drivers behind ticket sales, I have created a regression model with a target variable of daily game attendance. The model analyzes all of the different dependent variables to see which ones have the largest weight, and therefore are the most important in predicting our target variable.
+
+Further research: While this project has been illuminating in understanding the drivers behind Dodger Stadium home game attendance, there are many further facets we could explore to dive deeper into the topic. There is no recorded data that shows the actual ticket prices for these days, it would provide a deeper economic analysis to see which factors are linked to the highest profits. The day with the highest attendance did not necessarily bring in the most money, unless all tickets are priced the same for every seat during every game. We know that is untrue due to dynamic pricing. It would also be interesting to compare the attendance between different franchises, to see if the biggest predictors are similar between teams or if each market has its own drivers.
