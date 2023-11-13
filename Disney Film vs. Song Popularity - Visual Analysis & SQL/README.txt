@@ -1,0 +1,5 @@
+Does a film being a box office hit correlate with its soundtrack making waves on the radio and streaming services? You might be inclined to say yes, of course, when Barbie hit the box office, you heard nothing but the perfectly crafted pop hits of "Speed Drive" by Charli XCX and "Dance the Night" by Dua Lipa. Many times we will see radio taken over by pop hits from top films. But does this phenomenon hold true for soundtracks that are not fully fleshed out with pop hits?
+
+This project takes a look at the connections between a film's popularity and its songs popularity on streaming services, specifically Spotify. Using the Spotify API, I have collected information about every available Disney song that has originated from a film. I have cross-referenced this data with box office numbers for each of these films. Some films do have a focus on family-friendly pop hits, such as Frozen and Moana. However, some films have more classical and instrumental soundtracks - our Disney classics such as Bambi and Sleeping Beauty.
+
+Join me as we dive deeper into the Disney discography and discuss the films' impact on their soundtracks streamability.
