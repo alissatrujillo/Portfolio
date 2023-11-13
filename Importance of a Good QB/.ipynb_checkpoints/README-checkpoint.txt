@@ -1,0 +1,5 @@
+If you're not a Chiefs fan (or a Patriots fan of the last few decades), you might see the Super Bowl come and go every year, wondering why your team struggles to reach this all-important game every year. What changes could we make to improve? What qualities to the winning teams every year have in common?
+
+This project will take a look at data compiled by AWS' (Amazon Worldwide Services) Next Gen Stats API, which collects play-by-play data from the field as NFL games play out in real time. This API provides an incredible wealth of information regarding all aspects of NFL play, this tool is even used to predict in real time how likely a play is to be successful based on the current conditions of play;
+
+We will focus on the quarterback position, taking a close look at what many consider to be the most vital player to a teams' success. Just how important is the QB to the team's season outlook, and which qualities are most integral to surviving to the post-season? Let's jump in.
